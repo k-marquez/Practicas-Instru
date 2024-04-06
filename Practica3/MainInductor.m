@@ -30,8 +30,8 @@ tao = (L*R1+L*R2+L*Rf)/alpha
 fiveTao = 5 * tao
 
 h0 = [-E*R2/alpha (2*E*R2)/(Rf+R2+R1)]; % Condiciones iniciales simulación
-V0 = (2*E*R2)/(Rf+R2+R1); % Recalculando voltaje incial función explícita
-I0 = -E*R2/alpha; % Recalculando corriente incial función explícita
+V0 = (2*E*R2)/(Rf+R2+R1); % Voltaje incial función explícita
+I0 = -E*R2/alpha; % Corriente incial función explícita
 
 t0 = MedicionesIl(MedicionesIl(:,1) <= T/2); % Tiempos hasta la primera mitad del periodo
 tf = MedicionesIl(MedicionesIl(:,1) > T/2); % Tiempos después de la primera mitad del periodo
@@ -46,17 +46,18 @@ for i=1:2
     xx = [xx; x];
     
     % Solución explícita
-    Ilt = (I0-(E*R2)/alpha)*exp(-(alpha)*(tspan(:,i)-tspan(1,i))/((R1+R2+Rf)*L))+(E*R2)/alpha;
-    Vlt = exp(-(alpha)*(tspan(:,i)-tspan(1,i))/((R1+R2+Rf)*L))*V0;
+    tspan(:,i) = tspan(:,i) - tspan(1,i);
+    Ilt = (I0-(E*R2)/alpha)*exp(-(alpha)*tspan(:,i)/((R1+R2+Rf)*L))+(E*R2)/alpha;
+    Vlt = exp(-(alpha)*tspan(:,i)/((R1+R2+Rf)*L))*V0;
     Vlt = Vlt + Ilt*Rl; % Sumando el voltaje en la resitencia interna del inductor
     ee = [ee; [Ilt Vlt]];
     % Nota: (tspan(:,i)-tspan(1,i)) es para hacerle creer a la función
     %       explícita que está en el origen y no en el estado estacionario
     
     E = -E;   % Invirtiendo la entrada
-    h0 = [x(length(x),1) (2*E*R2)/(Rf+R2+R1)]; % Recalculando condiciones inciales de la simulación
-    V0 = (2*E*R2)/(Rf+R2+R1); % Recalculando voltaje incial función explícita
-    I0 = Ilt(length(Ilt)); % Recalculando corriente incial función explícita
+    h0 = [x(end,1) -alpha*x(end,1)/(R1+R2+Rf)+E*R2/(R1+R2+Rf)]; % Calculando condiciones inciales de la simulación
+    I0 = Ilt(end); % Calculando corriente incial función explícita
+    V0 = -alpha*I0/(R1+R2+Rf)+E*R2/(R1+R2+Rf); % Calculando voltaje incial función explícita
 end
 
 xx = xx(2:length(xx(:,1)) , :); % Eliminando primer punto en 0, 0
@@ -81,22 +82,51 @@ title('Voltaje en el Inductor');
 legend({'Medición','Simulación','Explícita','T/2 + 5*Tao','5*Tao'},'FontSize',12);
 grid minor;
 
+% Errores para el periodo completo
 maeDatosSimu = [...
     sum(abs(MedicionesIl(:,2) - xx(:,1))) / length(xx(:,1)), ...
     sum(abs(MedicionesVl(:,2) - xx(:,2))) / length(xx(:,2))...
-    ]
+    ];
 
 maeDatosExpli = [...
     sum(abs(MedicionesIl(:,2) - ee(:,1))) / length(ee(:,1)), ...
     sum(abs(MedicionesVl(:,2) - ee(:,2))) / length(ee(:,2))...
-    ]
+    ];
 
 mapeDatosSimu = [...
-    sum(abs((MedicionesIl(:,2) - xx(:,1))./MedicionesIl(:,2))) / length(xx(:,1)) * 100, ...
-    sum(abs((MedicionesVl(:,2) - xx(:,2))./MedicionesVl(:,2))) / length(xx(:,2)) * 100 ...
-    ]
+    sum(abs((MedicionesIl(:,2) - xx(:,1))./MedicionesIl(:,2))) / length(xx(:,1))*1e2 , ...
+    sum(abs((MedicionesVl(:,2) - xx(:,2))./MedicionesVl(:,2))) / length(xx(:,2))*1e2  ...
+    ];
 
 mapeDatosExpli = [...
-    sum(abs((MedicionesIl(:,2) - ee(:,1))./MedicionesIl(:,2)))  / length(ee(:,1)) * 100, ...
-    sum(abs((MedicionesVl(:,2) - ee(:,2))./MedicionesVl(:,2))) / length(ee(:,2)) * 100 ...
-    ]
+    sum(abs((MedicionesIl(:,2) - ee(:,1))./MedicionesIl(:,2)))  / length(ee(:,1))*1e2 , ...
+    sum(abs((MedicionesVl(:,2) - ee(:,2))./MedicionesVl(:,2))) / length(ee(:,2))*1e2  ...
+    ];
+
+% Errores para medio periodo
+mIl = MedicionesIl(1:length(t0),2);
+mVl = MedicionesVl(1:length(t0),2);
+odeIl = xx(1:length(t0),1);
+odeVl = xx(1:length(t0),2);
+eIl = ee(1:length(t0),1);
+eVl = ee(1:length(t0),2);
+
+maeDatosSimu2 = [...
+    sum(abs(mIl - odeIl)) / length(mIl), ...
+    sum(abs(mVl - odeVl)) / length(mVl)...
+    ];
+
+maeDatosExpli2 = [...
+    sum(abs(mIl - eIl)) / length(mIl), ...
+    sum(abs(mVl - eVl)) / length(mVl)...
+    ];
+
+mapeDatosExpli2 = [...
+    sum(abs((mIl - eIl)./mIl)) / length(mIl)*1e2 , ...
+    sum(abs((mVl - eVl)./mVl)) / length(mVl)*1e2  ...
+    ];
+
+mapeDatosSimu2 = [...
+    sum(abs((mIl - odeIl)./mIl)) / length(mIl)*1e2 , ...
+    sum(abs((mVl - odeVl)./mVl)) / length(mVl)*1e2  ...
+    ];

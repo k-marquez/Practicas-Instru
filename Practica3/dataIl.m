@@ -93,7 +93,7 @@ MedicionesIl = table2array(F0000CH1);
 i = MedicionesIl(:,1) >= CHANGETIME  & MedicionesIl(:,1) <= CHANGETIME + T;
 MedicionesIl = MedicionesIl(i, 1:2);
 MedicionesIl(:,1) = MedicionesIl(:, 1) - MedicionesIl(1, 1);
-MedicionesIl(:,2) = MedicionesIl(:,2) / Rm + 4.8e-4; % Diviendo entre resistencia de medición
+MedicionesIl(:,2) = MedicionesIl(:,2) / Rm + 4e-4; % Diviendo entre resistencia de medición
 
 %% Clear temporary variables
 clearvars filename delimiter formatSpec fileID dataArray ans raw col numericData rawData row regexstr result numbers invalidThousandsSeparator thousandsRegExp me rawNumericColumns rawCellColumns R;
