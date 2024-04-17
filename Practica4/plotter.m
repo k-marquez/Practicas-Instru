@@ -15,9 +15,9 @@ function plotGraph(rowFig,colFig,data,times,plotTitles,textLegend,xLabels,yLabel
         subData = data{i};
         subplot(rowFig, colFig, i)
         hold on;
-        subTime = times{1};
+        subTime = times{i}{1};
             for j = 1 : dimSubPlots(2)
-                plot(subTime{j},subData{j});
+                plot(subTime,subData{j});
             end  
         ylabel(yLabels{i},'interpreter', 'latex','FontSize',13);
         xlabel(xLabels{1},'interpreter', 'latex','FontSize',13);
@@ -35,7 +35,7 @@ function plotDiag(rowFig,colFig,data,times,plotTitles,textLegend,xLabels,yLabels
         dim = size(data{i});
         hold on;
         for j = 1 : dim(2)
-            plot(times{i}{j},data{i}{j},'+')
+            plot(times{i}{j},data{i}{j},'.')
         end
         if i > 3
             indexTitle = i - 3;

@@ -1,6 +1,6 @@
-function dx = EDOs(~, x, C)
+function dx = EDOs(~, x, R1)
  
-global E R1 Rf Rl L Ric Ril;
+global E Rf Rl L Ric Ril C;
     % Il(t)
     dx(1) = ((-1+Ric/(R1+Ric))*x(2)+(-Rf-Rl-Ril-Ric*R1/(R1+Ric))*x(1)+E)/L;
     % Vc(t)
