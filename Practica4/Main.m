@@ -10,10 +10,14 @@ Ril = 10810;  % Resistencia para medición de la corriente
 Rl = 295;    % Resistencia interna del inductor
 L = 161e-3; % Inductancia
 C = 1000e-12; % Capacitancia
-R1 = [11100 1060 778];  % Resistencia 1: [Sub Crítico Sobre]
+R1 = [921000 1060 778];  % Resistencia 1: [Sub Crítico Sobre]
 F = 2.43e3;
 T = 1/F;  % Frecuencia
 
+% Análisis cualitativo del sistema
+% - Subamortiguado: Autovalores complejos conjugados -> Nodo espiral/Foco
+% - Críticamente Amortiguado: Autovalores complejos conjugados -> Nodo espiral/Foco
+% - Sobre Amortiguado: Autovalores reales y diferentes -> Nodo atractor
 
 %Carga de datos
 LoadDataSubIndVl;
@@ -37,9 +41,9 @@ LoadDataSobCapIc;
 %   - Vl: Voltaje en el inductor
 %   - Ic: Corriente en el capacitor
 %   - Tiempo de simulación
-eeSub= [0 0 0 0 0];   % Solución explícita subamortiguada
-eeCritico = [0 0 0 0 0];  % Solución explícita críticamente amortiguada
-eeSobre= [0 0 0 0 0]; % Solución explícita sobreamortiguada
+eeSub= [0 0 0 0 0];   % Solución explícita subamortiguada -74650.76760+30782.09099*I, -74650.76760-30782.09099*I
+eeCritico = [0 0 0 0 0];  % Solución explícita críticamente amortiguada -82424.97605+2114.582975*I, -82424.97605-2114.582975*I
+eeSobre= [0 0 0 0 0]; % Solución explícita sobreamortiguada -75734.27616, -89966.79124
 
 % Salida solución numérica:
 %   - Il: Corriente en el inductor
@@ -248,4 +252,4 @@ errorsSub = Errors([SubIl.I SubVc.V SubVl.V SubIc.I], xxSub)
 errorsCritico = Errors([CriIl.I CriVc.V CriVl.V CriIc.I], xxCritico)
 errorsSobre = Errors([SobIl.I SobVc.V SobVl.V SobIc.I], xxSobre)
  
-tiemposAsentamiento = TS([0.9244881460 996710825 1.003709316], [80748.21502 82452.09601 82544.35058])
+tiemposAsentamiento = TS([0.9244881460 0.996710825 1.003709316], [80748.21502 82452.09601 82544.35058])
