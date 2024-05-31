@@ -1,0 +1,11 @@
+Sumador(X1 / X2) - Integrador(X1 / X2) - Amp (a11 / a22) / Sin conectar las retroalimentaciones (a11 a22):
+- Para probar integrador sin retroalimentación frecuencia (1Hz) y pico a pico (10V) entrada bajo para que no se sature.
+- Tiempo simulación 3 seg.
+
+Sumador(X1 / X2) - Integrador(X1 / X2) - Amp (a11 / a22) / Con las retroalimentaciones conectadas (a11 a22):
+- Para probar integrador con retroalimentación frecuencia (0.1Hz) y pico a pico (10V) entrada bajo para que no se sature.
+- Tiempo de simulación 20seg.
+
+Sumador(X1 / X2) - Integrador(X1 / X2) - Amp (a11 / a22) - Amp (a11 / a22) / Con todas las retroalimentaciones conectadas:
+- Para probar integrador con retroalimentación frecuencia (0.1Hz) y pico a pico (10V) entrada bajo para que no se sature.
+- Tiempo de simulación 20seg.
